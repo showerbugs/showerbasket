@@ -1,46 +1,57 @@
-import requests
-import hmac
+import os
 import time
 import json
-import base64
+import hmac
 import hashlib
+import base64
 
-from config import PERSONAL_API_ACCESS_TOKEN
-from config import PERSONAL_API_SECRET_KEY
-from config import COINONE_API_SERVER
+import requests
 
-def get_signature(encoded_payload, secret_key):
-    signature = hmac.new(secret_key, encoded_payload, hashlib.sha512)
-    return signature.hexdigest()
 
-def get_encoded_payload(payload):
-    dumped_json = json.dumps(payload)
-    return base64.b64encode(dumped_json.encode('utf-8'))
+class API:
+    def __init__(self):
+        self.root = os.environ.get('ROOT')
+        self.version = os.environ.get('VERSION')
+        self.base = f'{self.root}/{self.version}'
 
-def get_headers(payload):
-    encoded_secret_key = base64.b64encode(PERSONAL_API_SECRET_KEY.upper().encode('utf-8'))
-    encoded_payload = get_encoded_payload(payload)
-    return {
-        'Content-type': 'application/json',
-        'X-COINONE-PAYLOAD': encoded_payload,
-        'X-COINONE-SIGNATURE': get_signature(encoded_payload, PERSONAL_API_SECRET_KEY.upper().encode('utf-8'))}
+        self.access_token = os.environ.get('ACCESS_TOKEN')
+        self.secret_key = os.environ.get('SECRET_KEY')
 
-def retrieve_currency(currency):
-    url = COINONE_API_SERVER + '/ticker'
-    payload = {'currency':currency}
-    response = requests.get(url, params=payload)
-    return response.json()
+    def _header(self, payload):
+        payload = self._encoded_payload(payload)
+        signature = self._signature(payload)
+        header = {
+            'Content-type': 'application/json',
+            'X-COINONE-PAYLOAD': payload,
+            'X-COINONE-SIGNATURE': signature,
+        }
+        return header
 
-def retrieve_account_balance():
-    url = COINONE_API_SERVER + '/v2/account/balance'
-    payload = {
-        'access_token': PERSONAL_API_ACCESS_TOKEN,
-        'nonce': int(time.time() * 1000)
-    }
-    response = requests.post(url, headers=get_headers(payload), data=payload)
-    result = response.json()
-    return result
+    def _encoded_payload(self, payload):
+        dumped_payload = json.dumps(payload)
+        encoded_payload = base64.b64encode(dumped_payload.encode('utf-8'))
+        return encoded_payload
 
-    
+    def _signature(self, payload):
+        encoded_secret_key = self.secret_key.upper().encode('utf-8')
+        signature = hmac.new(
+            encoded_secret_key, payload, hashlib.sha512)
+        return signature.hexdigest()
 
-    
+
+class Account(API):
+    def __init__(self):
+        super().__init__()
+        self.base = f'{self.base}/account'
+
+    def balance(self):
+        url = f'{self.base}/balance'
+        payload = {
+            'access_token': self.access_token,
+            'nonce': int(time.time() * 1000),
+        }
+        header = self._header(payload)
+
+        resp = requests.post(url, headers=header, data=payload)
+        result = resp.json()
+        return result

@@ -1,4 +1,7 @@
-#!/usr/bin/env python
+import pprint
 
-import cli.app
+from api.coinone import Account
 
+
+account = Account()
+pprint.pprint(account.balance())
