@@ -1,4 +1,5 @@
 # Insert your coinone personal api access token and secret key
+COINONE_API_SERVER = 'https://api.coinone.co.kr'
 PERSONAL_API_ACCESS_TOKEN = ''
 PERSONAL_API_SECRET_KEY = ''
 
