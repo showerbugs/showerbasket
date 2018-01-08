@@ -1,0 +1,14 @@
+# Insert your coinone personal api access token and secret key
+PERSONAL_API_ACCESS_TOKEN = ''
+PERSONAL_API_SECRET_KEY = ''
+
+import os
+if 'PERSONAL_API_ACCESS_TOKEN' in os.environ:
+    print('Use PERSONAL_API_ACCESS_TOKEN in environment variable')
+    PERSONAL_API_ACCESS_TOKEN = os.environ['PERSONAL_API_ACCESS_TOKEN']
+if 'PERSONAL_API_SECRET_KEY' in os.environ:
+    print('Use PERSONAL_API_SECRET_KEY in environment variable')
+    PERSONAL_API_SECRET_KEY = os.environ['PERSONAL_API_SECRET_KEY']
+
+if not PERSONAL_API_ACCESS_TOKEN or not PERSONAL_API_SECRET_KEY:
+    print('Please insert coinone api token and secret first')
