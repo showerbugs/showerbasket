@@ -2,11 +2,10 @@
 __pycache__/
 *.pyc
 
-# env
-.env
-
 # showerbasket
-config.py
+config/config.yml
+config/*.sed
 
 # editor
 .vscode/
+.cache

@@ -1,4 +1,3 @@
-import os
 import time
 import json
 import hmac
@@ -7,15 +6,17 @@ import base64
 
 import requests
 
+from config import config
+
 
 class API:
     def __init__(self):
-        self.root = os.environ.get('ROOT')
-        self.version = os.environ.get('VERSION')
+        self.root = config.coinone.root
+        self.version = config.coinone.version
         self.base = f'{self.root}/{self.version}'
 
-        self.access_token = os.environ.get('ACCESS_TOKEN')
-        self.secret_key = os.environ.get('SECRET_KEY')
+        self.access_token = config.coinone.access_token
+        self.secret_key = config.coinone.secret_key
 
     def _header(self, payload):
         payload = self._encoded_payload(payload)

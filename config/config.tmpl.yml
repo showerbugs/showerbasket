@@ -1,0 +1,7 @@
+env:
+  type: __ENV_TYPE__
+coinone:
+  root: https://api.coinone.co.kr
+  version: v2
+  access_token: __COINONE_ACCESS_TOKEN__
+  secret_key: __COINONE_SECRET_KEY__

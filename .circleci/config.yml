@@ -23,16 +23,17 @@ jobs:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
       - run:
-          name: Generate config.py
+          name: Generate config.yml
           command: |
-            cp config.py.template config.py
+            sed -e "s|__ENV_TYPE__|circleci|g" config/config.tmpl.yml > config/config.yml.tmp1
+            sed -e "s|__COINONE_ACCESS_TOKEN__|$COINONE_ACCESS_TOKEN|g" config/config.yml.tmp1 > config/config.yml.tmp2
+            sed -e "s|__COINONE_SECRET_KEY__|$COINONE_SECRET_KEY|g" config/config.yml.tmp2 > config/config.yml
       - run:
           name: run tests
           command: |
             . venv/bin/activate
-            py.test --cov=./ -s
+            pytest --cov=./ -sv
             codecov
       - store_artifacts:
           path: test-reports
           destination: test-reports
-          
