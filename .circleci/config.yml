@@ -22,6 +22,10 @@ jobs:
             - ./venv
           key: v1-dependencies-{{ checksum "requirements.txt" }}
       - run:
+          name: Generate config.py
+          command: |
+            cp config.py.template config.py
+      - run:
           name: run tests
           command: |
             . venv/bin/activate
