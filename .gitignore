@@ -102,3 +102,6 @@ ENV/
 
 # showerbasket config
 config.py
+
+# vscode
+.vscode/
